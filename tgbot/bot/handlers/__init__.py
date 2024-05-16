@@ -4,14 +4,15 @@ from tgbot.bot.filters import ChatPrivateFilter
 
 
 def setup_routers() -> Router:
-    from .users import start, help, echo
+    from .users import start, help, echo, record
     from .errors import error_handler
 
     router = Router()
 
     # Agar kerak bo'lsa, o'z filteringizni o'rnating
     start.router.message.filter(ChatPrivateFilter())
+    record.router.message.filter(ChatPrivateFilter())
 
-    router.include_routers(start.router, help.router, echo.router, error_handler.router)
+    router.include_routers(start.router, record.router, help.router, echo.router, error_handler.router)
 
     return router

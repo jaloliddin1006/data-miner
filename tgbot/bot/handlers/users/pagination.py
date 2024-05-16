@@ -1,7 +1,7 @@
 from contextlib import suppress
 from aiogram.types import CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
-from keyboards import fabrics
+from tgbot.bot.keyboards import fabrics
 from aiogram import Router, F
 # from data.subloader import get_json
 

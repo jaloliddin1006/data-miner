@@ -7,12 +7,16 @@ from tgbot.models import User
 from tgbot.bot.loader import bot
 from django.conf import settings
 from tgbot.bot.utils.extra_datas import make_title
+from tgbot.bot.keyboards import reply
+import os
 
 router = Router()
 
 
 @router.message(CommandStart())
 async def do_start(message: types.Message):
+    if not os.path.exists('media/voices'):
+        os.makedirs('media/voices')
     """
             MARKDOWN V2                     |     HTML
     link:   [Google](https://google.com/)   |     <a href='https://google.com/'>Google</a>
@@ -47,4 +51,4 @@ async def do_start(message: types.Message):
             )
         except Exception as error:
             logger.info(f"Data did not send to admin: {admin}. Error: {error}")
-    await message.answer(f"Assalomu alaykum {make_title(full_name)}\!", parse_mode=ParseMode.MARKDOWN_V2)
+    await message.answer(f"Assalomu alaykum {make_title(full_name)}\!", parse_mode=ParseMode.MARKDOWN_V2, reply_markup=reply.main)

@@ -31,3 +31,14 @@ def check_channel_sub(channels: list):
     builder = InlineKeyboardBuilder()
     [builder.button(text=name, url=link) for name, link in channels]
     return builder.as_markup()
+
+
+
+
+async def check_text(text_id: str):
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🔄 Qaytadan yozish", callback_data=f"rewrite_record:{text_id}")
+    builder.button(text="✅ Saqlash", callback_data=f"correct:{text_id}")
+    builder.button(text="❌ Bekor qilish", callback_data=f"wrong:{text_id}")
+    builder.adjust(1, 2) 
+    return builder.as_markup()
