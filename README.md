@@ -1,4 +1,4 @@
-# Django-Aiogram3-Bot-Template
+# Data Miner Bot
 
 The telegram bot which written in aiogram framework integrated with django. Database built with postgresql
 
