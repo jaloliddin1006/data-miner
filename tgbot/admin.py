@@ -1,6 +1,7 @@
 from django.contrib import admin
 from tgbot.models import User as TelegramUser, Text, Voice, TextPassed, VoiceCheck
 from django.utils.html import format_html
+import os
 
 @admin.register(TelegramUser)
 class UserAdmin(admin.ModelAdmin):
@@ -29,6 +30,16 @@ class VoiceAdmin(admin.ModelAdmin):
         else:
             return 'No audio file'
     audio_tag.short_description = 'Audio'
+
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            print(os.path.exists(obj.voice.path))
+            os.remove(obj.voice.path)
+        queryset.delete()
+
+    def delete_model(self, request, obj):
+        os.remove(obj.voice.path)
+        obj.delete()
 
 
 @admin.register(TextPassed)
