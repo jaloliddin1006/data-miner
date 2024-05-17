@@ -42,3 +42,12 @@ async def check_text(text_id: str):
     builder.button(text="❌ Bekor qilish", callback_data=f"wrong:{text_id}")
     builder.adjust(1, 2) 
     return builder.as_markup()
+
+
+async def check_voice(text_id: str):
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🔼 Menu", callback_data=f"menu")
+    builder.button(text="👍🏻 To'g'ri", callback_data=f"positive:{text_id}")
+    builder.button(text="👎 Noto'g'ri", callback_data=f"negative:{text_id}")
+    builder.adjust(1, 2) 
+    return builder.as_markup()

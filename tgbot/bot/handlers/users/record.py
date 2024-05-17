@@ -1,6 +1,4 @@
 from aiogram import F, Router, types
-from aiogram.enums.parse_mode import ParseMode
-from aiogram.client.session.middlewares.request_logging import logger
 from aiogram.types import CallbackQuery, Voice
 from aiogram.fsm.context import FSMContext
 import io
@@ -8,9 +6,7 @@ from pydub import AudioSegment
 from asgiref.sync import sync_to_async
 
 from tgbot.models import User, Voice, Text, TextPassed
-from tgbot.bot.loader import bot, Bot
-from django.conf import settings
-from tgbot.bot.utils.extra_datas import make_title
+from tgbot.bot.loader import bot
 from tgbot.bot.keyboards import reply, builders
 from tgbot.bot.states.main import RecordState
 
@@ -26,7 +22,7 @@ async def record_func(message: types.Message, state: FSMContext, user_id: int = 
         else:
             user = await User.objects.aget(telegram_id=message.from_user.id)
             await message.answer("Ovoz yozishni boshlang. Matnni o'qib, voice yuboring.")
-        # Wrap the synchronous ORM queries with sync_to_async and evaluate them completely within sync_to_async
+
         user_records = await sync_to_async(
             lambda: list(user.voices.all().values_list("text__text_id", flat=True)),
             thread_sensitive=True
@@ -39,8 +35,6 @@ async def record_func(message: types.Message, state: FSMContext, user_id: int = 
         )()
         # print(user_passed)
 
-
-        # Wrap the filtering and exclusion query in sync_to_async and evaluate it completely
         text = await sync_to_async(
             lambda: Text.objects.filter().exclude(text_id__in=user_records+user_passed).order_by('?').first(),
             thread_sensitive=True
@@ -48,7 +42,6 @@ async def record_func(message: types.Message, state: FSMContext, user_id: int = 
     else:
         text = await Text.objects.aget(text_id=text_id)
     # print(text)    
-    # print(text.text_id)    
 
 
     if not text:
@@ -125,7 +118,7 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
     await sync_to_async(
         Voice.objects.create,
         thread_sensitive=True
-    )(user=user, text=text, voice=voice_mp3_path)
+    )(user=user, text=text, voice=voice_mp3_path, voice_id=voice_id)
 
     await call.answer()
     await call.message.edit_reply_markup()
@@ -150,7 +143,3 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
     await call.message.answer("👇 Yangi matnni o'qib, voice yuboring. 👇")
     await state.clear()
     await record_func(call.message, state, user_id=call.from_user.id)
-
-# @router.message(Form.photo, ~F.photo)
-# async def profile(message: Message, state: FSMContext):
-#     await message.answer("Faqat rasm yuboring")

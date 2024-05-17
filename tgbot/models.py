@@ -36,6 +36,7 @@ class Voice(BaseModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="voices")
     text = models.ForeignKey(Text, on_delete=models.SET_NULL, null=True, related_name="voices")
     voice = models.FileField(upload_to="voices/")
+    voice_id = models.CharField(max_length=255, unique=True, null=True)
 
     def __str__(self):
         return str(self.text.text)
@@ -63,7 +64,7 @@ class VoiceCheck(BaseModel):
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.is_correct
+        return str(self.is_correct)
 
     class Meta:
         db_table = "voice_checks"

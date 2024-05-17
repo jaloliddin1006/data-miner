@@ -40,6 +40,6 @@ class VoicePassedAdmin(admin.ModelAdmin):
 
 @admin.register(VoiceCheck)
 class VoiceCheckAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "voice", )
+    list_display = ("id", "user", "voice", 'is_correct')
     fields = ("user", "voice", )
     search_fields = ("user", "voice", )
