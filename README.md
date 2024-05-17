@@ -37,3 +37,35 @@ python manage.py runserver
 ## If you have questions for this project, join and ask me: https://t.me/Mamatmusayev_uz
 
 
+#
+
+
+# Deploy Aiogram Bot
+#deploy #bot
+
+aiogram orqali yozilgan telegram botni ubuntu serverga deploy qilamiz.
+Buning uchun quidagi manzilda bot uchun service yozish uchun faylni ochib olamiz:
+
+`nano /etc/systemd/system/{yourbot}.service`
+
+endi ushbu service faylga quidagini yozamiz:
+```
+[Unit]
+Description=Aiogram Bot Description
+
+[Service]
+Type=simple
+ExecStart=/{path}/{your}/{project}/venv/bin/python  /{path}/{your}/{project}/manage.py runbot
+
+[Install]
+WantedBy=multi-user.target
+```
+service ni yozib bo'lgandan so'ng uni ishga tushirib qo'yamiz:
+
+`sudo systemctl daemon-reload`
+
+`sudo systemctl enable {yourbot}.service`
+
+`sudo systemctl start {yourbot}.service`
+
+`sudo systemctl status {yourbot}.service`
