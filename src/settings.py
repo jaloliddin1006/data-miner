@@ -14,7 +14,7 @@ API_TOKEN = env.str("API_TOKEN")
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG")
 ADMINS = env.list("ADMINS")
-os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+# os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # DB_USER = env.str("DB_USER")
 # DB_PASS = env.str("DB_PASS")
