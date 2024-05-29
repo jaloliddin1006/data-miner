@@ -1,10 +1,19 @@
 from django.db import models
 
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-class User(models.Model):
+    class Meta:
+        abstract = True
+
+
+class User(BaseModel):
     telegram_id = models.PositiveBigIntegerField(unique=True)
     full_name = models.CharField(max_length=255)
     username = models.CharField(max_length=128, null=True)
+    location = models.CharField(max_length=255)
+    sex = models.CharField(max_length=255)
 
     def __str__(self):
         return self.full_name
@@ -13,12 +22,17 @@ class User(models.Model):
         db_table = "telegram_users"
 
 
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class BotAdmin(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
-    class Meta:
-        abstract = True
+    def __str__(self):
+        return str(self.user.username)
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            pass
+        super(BotAdmin, self).save(*args, **kwargs)
 
 
 class Text(BaseModel):
@@ -46,7 +60,7 @@ class Voice(BaseModel):
 
 
 class TextPassed(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="passed")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="passed")
     text = models.ForeignKey(Text, on_delete=models.CASCADE, related_name="passed")
 
     def __str__(self):
@@ -73,3 +87,19 @@ class VoiceCheck(BaseModel):
         ]
 
     
+class Feedback(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="feedback")
+    feedback = models.TextField()
+
+    def __str__(self):
+        return f"{self.user.username}"
+
+
+class Channel(BaseModel):
+    channel_id = models.BigIntegerField()
+    name = models.CharField(max_length=500)
+    username = models.CharField(max_length=500)
+
+    
+    def __str__(self):
+        return f"{self.channel_id}"

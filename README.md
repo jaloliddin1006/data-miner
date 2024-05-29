@@ -1,4 +1,4 @@
-# Django-Aiogram3-Bot-Template
+# Data Miner Bot
 
 The telegram bot which written in aiogram framework integrated with django. Database built with postgresql
 
@@ -34,14 +34,10 @@ python manage.py createsuperuser
 ```shell
 python manage.py runserver
 ```
-## If you have questions for this project, join and ask me: https://t.me/Mamatmusayev_uz
-
-
-#
 
 
 # Deploy Aiogram Bot
-#deploy #bot
+
 
 aiogram orqali yozilgan telegram botni ubuntu serverga deploy qilamiz.
 Buning uchun quidagi manzilda bot uchun service yozish uchun faylni ochib olamiz:
@@ -69,3 +65,10 @@ service ni yozib bo'lgandan so'ng uni ishga tushirib qo'yamiz:
 `sudo systemctl start {yourbot}.service`
 
 `sudo systemctl status {yourbot}.service`
+
+
+# get backup from sqlite
+`sqlite3 db.sqlite3 .dump > backup.sql`
+
+# restore backup file
+`psql -U db_user db_name < backup.sql`

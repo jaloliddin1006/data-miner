@@ -1,7 +1,7 @@
 from aiogram import F, Router, types
 from aiogram.types import CallbackQuery, Voice
 from aiogram.fsm.context import FSMContext
-import io
+import io, os
 from pydub import AudioSegment
 from asgiref.sync import sync_to_async
 
@@ -9,50 +9,51 @@ from tgbot.models import User, Voice, Text, TextPassed
 from tgbot.bot.loader import bot
 from tgbot.bot.keyboards import reply, builders
 from tgbot.bot.states.main import RecordState
-
+from tgbot.bot.utils import check_channel_member
 router = Router()
-
 
 @router.message(F.text.in_(['🎙 Ovoz yozish', '/record']))
 async def record_func(message: types.Message, state: FSMContext, user_id: int = None, text_id: str = None):
-    await state.set_state(RecordState.voice)
-    if not text_id:
-        if user_id:
-            user = await User.objects.aget(telegram_id=user_id)
+    checked = await check_channel_member.check_user(message.chat.id)
+    if not checked:
+        await state.set_state(RecordState.voice)
+        if not text_id:
+            if user_id:
+                user = await User.objects.aget(telegram_id=user_id)
+            else:
+                user = await User.objects.aget(telegram_id=message.from_user.id)
+                await message.answer("Ovoz yozishni boshlang. Matnni o'qib, voice yuboring.")
+
+            user_records = await sync_to_async(
+                lambda: list(user.voices.all().values_list("text__text_id", flat=True)),
+                thread_sensitive=True
+            )()
+            # print(user_records)
+
+            user_passed = await sync_to_async(
+                lambda: list(user.passed.values_list("text__text_id", flat=True)),
+                thread_sensitive=True
+            )()
+            # print(user_passed)
+
+            text = await sync_to_async(
+                lambda: Text.objects.filter().exclude(text_id__in=user_records+user_passed).order_by('?').first(),
+                thread_sensitive=True
+            )()
         else:
-            user = await User.objects.aget(telegram_id=message.from_user.id)
-            await message.answer("Ovoz yozishni boshlang. Matnni o'qib, voice yuboring.")
-
-        user_records = await sync_to_async(
-            lambda: list(user.voices.all().values_list("text__text_id", flat=True)),
-            thread_sensitive=True
-        )()
-        # print(user_records)
-
-        user_passed = await sync_to_async(
-            lambda: list(user.passed.values_list("text__text_id", flat=True)),
-            thread_sensitive=True
-        )()
-        # print(user_passed)
-
-        text = await sync_to_async(
-            lambda: Text.objects.filter().exclude(text_id__in=user_records+user_passed).order_by('?').first(),
-            thread_sensitive=True
-        )()
-    else:
-        text = await Text.objects.aget(text_id=text_id)
-    # print(text)    
+            text = await Text.objects.aget(text_id=text_id)
+        # print(text)    
 
 
-    if not text:
-        await message.answer("Siz barcha matnlarni o'qib chiqdingiz")
-        await state.clear()
-        return
+        if not text:
+            await message.answer("Siz barcha matnlarni o'qib chiqdingiz")
+            await state.clear()
+            return
 
- 
-    await state.update_data(text_id=text.text_id)
-    await state.update_data(text=text.text)
-    await message.answer(text.text, reply_markup=reply.text_btn)
+    
+        await state.update_data(text_id=text.text_id)
+        await state.update_data(text=text.text)
+        await message.answer(text.text, reply_markup=reply.text_btn)
 
 
 
@@ -108,8 +109,15 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
     voice = await bot.get_file(voice_id)
     voice_ogg = io.BytesIO()
     await bot.download_file(voice.file_path, voice_ogg)
+
     
-    voice_mp3_path = f"voices/{text_id}.mp3"
+
+    user_folder = f"media/voices/{user.telegram_id}"
+    if not os.path.exists(user_folder):
+        os.mkdir(user_folder)
+
+    voice_mp3_path = f"voices/{user.telegram_id}/{text_id}.mp3"
+
     AudioSegment.from_file(voice_ogg, format="ogg").export(
         f"media/{voice_mp3_path}", format="mp3"
     )

@@ -13,3 +13,4 @@ async def on_startup_notify(bot: Bot):
             await bot.send_message(int(admin), "\n".join(message))
         except Exception as err:
             logging.exception(err)
+#

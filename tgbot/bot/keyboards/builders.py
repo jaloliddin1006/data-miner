@@ -1,5 +1,34 @@
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder # type: ignore
 
+
+GENDER_CHOISES = (
+    ('erkak', '🤵‍♂️ Erkak'),
+    ('ayol', '🤵‍♀️ Ayol')
+)
+
+# REGION_CHOISES = (
+#     ('001', 'Toshkent shahri'),
+#     ('014', 'Andijon'),
+#     ('002', 'Buxoro'),
+#     ('003', 'Farg`ona'),
+#     ('004', 'Jizzax'),
+#     ('005', 'Xorazm'),
+#     ('006', 'Namangan'),
+#     ('007', 'Navoiy'),
+#     ('008', 'Qashqadaryo'),
+#     ('009', 'Qoraqalpog`iston'),
+#     ('010', 'Samarqand'),
+#     ('011', 'Sirdaryo'),
+#     ('012', 'Surxondaryo'),
+#     ('013', 'Toshkent'),
+# )
+
+regions = [
+    "Toshkent shahri", "Andijon", "Buxoro", "Farg`ona",
+    "Jizzax", "Xorazm", "Namangan", "Navoiy",
+    "Qoraqalpog`iston",'Samarqand', "Surxondaryo", "Qashqadaryo",
+     "Sirdaryo", "Toshkent"
+]
 
 def calc_kb():
     items = [
@@ -18,7 +47,7 @@ def calc_kb():
     return builder.as_markup(resize_keyboard=True)
 
 
-def profile(text: str | list):
+def profile(text):
     builder = ReplyKeyboardBuilder()
     if isinstance(text, str):
         text = [text]
@@ -50,4 +79,16 @@ async def check_voice(text_id: str):
     builder.button(text="👍🏻 To'g'ri", callback_data=f"positive:{text_id}")
     builder.button(text="👎 Noto'g'ri", callback_data=f"negative:{text_id}")
     builder.adjust(1, 2) 
+    return builder.as_markup()
+
+async def get_gender_btn(sex):
+    builder = InlineKeyboardBuilder()
+    [builder.button(text=f"{name} ✅" if sex == code else name, callback_data=f"set_gender_{code}") for code, name in GENDER_CHOISES]
+    return builder.as_markup()
+
+
+async def get_region_btn(region):
+    builder = InlineKeyboardBuilder()
+    [builder.button(text=f"{name} ✅" if region == name else name, callback_data=f"set_region_{name}") for name in regions]
+    builder.adjust(1, *[2]*6) 
     return builder.as_markup()
