@@ -14,19 +14,22 @@ API_TOKEN = env.str("API_TOKEN")
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG")
 ADMINS = env.list("ADMINS")
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
-DB_USER = env.str("DB_USER")
-DB_PASS = env.str("DB_PASS")
-DB_NAME = env.str("DB_NAME")
-DB_HOST = env.str("DB_HOST")
-DB_PORT = env.str("DB_PORT")
+# DB_USER = env.str("DB_USER")
+# DB_PASS = env.str("DB_PASS")
+# DB_NAME = env.str("DB_NAME")
+# DB_HOST = env.str("DB_HOST")
+# DB_PORT = env.str("DB_PORT")
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["asr.projects.uz"]
 
+if DEBUG:
+    ALLOWED_HOSTS.append('127.0.0.1')
 
 # Application definition
 
@@ -130,8 +133,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'#Location of static files
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
-# STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles'), ]
+STATIC_ROOT  = os.path.join(BASE_DIR, 'static')
 
 
 MEDIA_URL = '/media/'
