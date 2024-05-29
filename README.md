@@ -66,7 +66,6 @@ service ni yozib bo'lgandan so'ng uni ishga tushirib qo'yamiz:
 
 `sudo systemctl status {yourbot}.service`
 
-
 # get backup from sqlite
 `sqlite3 db.sqlite3 .dump > backup.sql`
 
