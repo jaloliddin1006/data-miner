@@ -10,7 +10,6 @@ async def set_default_commands(bot: Bot):
         BotCommand(command="/record", description="Ovoz yozishni boshlash"),
         BotCommand(command="/checking", description="Tekshirish"),
         BotCommand(command="/stat", description="Statistikani ko'rish"),
-        BotCommand(command="/feedback", description="Fikr bildirish"),
         BotCommand(command="/settings", description="Ma'lumotlarim bo'limi"),
     ]
     await bot.set_my_commands(commands=commands, scope=BotCommandScopeAllPrivateChats())

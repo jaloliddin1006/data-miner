@@ -6,7 +6,7 @@ import os
 
 @admin.register(BotAdmin)
 class BotAdminsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'telegram_id', 'user__username', 'is_active', 'created_at')
+    list_display = ('id', 'telegram_id', 'user', 'is_active', 'created_at')
     list_editable = ('is_active',)
     list_display_links = ('id', 'telegram_id')
 
@@ -68,7 +68,7 @@ class VoiceAdmin(admin.ModelAdmin):
 
 @admin.register(TextPassed)
 class VoicePassedAdmin(admin.ModelAdmin):
-    list_display = ("id", "user__username", "text", )
+    list_display = ("id", "user", "text", )
     fields = ("user", "text", )
  
     search_fields = ("user__username", "text__text", )
@@ -79,7 +79,7 @@ class VoicePassedAdmin(admin.ModelAdmin):
     
 @admin.register(VoiceCheck)
 class VoiceCheckAdmin(admin.ModelAdmin):
-    list_display = ("id", "user__full_name", "voice", 'is_correct')
+    list_display = ("id", "user", "voice", 'is_correct')
     search_fields = ("user__username", "voice__text", )
     # list_filter = ('user__username', 'voice__text', 'is_correct')
     readonly_fields = ('audio_tag',)

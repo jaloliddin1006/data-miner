@@ -21,7 +21,6 @@ main = ReplyKeyboardMarkup(
     one_time_keyboard=True,
     input_field_placeholder="Biror birini tanlang",
     selective=True
-
 )
 
 
@@ -50,7 +49,6 @@ back_btn = ReplyKeyboardMarkup(
 )
 
 rmk = ReplyKeyboardRemove()
-
 
 settings_btn = ReplyKeyboardMarkup(
     keyboard=[

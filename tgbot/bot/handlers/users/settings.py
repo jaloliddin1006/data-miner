@@ -1,21 +1,13 @@
 from aiogram import F, Router, types
-from aiogram.types import CallbackQuery, Voice
-from aiogram.fsm.context import FSMContext
-from asgiref.sync import sync_to_async
+from aiogram.types import CallbackQuery
 
-from tgbot.models import Feedback, User
-from tgbot.bot.loader import bot
+from tgbot.models import User
 from tgbot.bot.keyboards import reply, builders
-from tgbot.bot.states.main import FeedBackState
-from tgbot.bot.utils import check_channel_member
 
 router = Router()
 
 @router.message(F.text.in_(['/settings']))
-async def settings_func_start(message: types.Message, state: FSMContext):
-    # user = await User.objects.aget(telegram_id=message.chat.id)
-    text = "Sizning ma'lumotlaringizni o'zgartirish bo'limi."
-    await message.answer(text)
+async def settings_func_start(message: types.Message):
     await message.answer("O'zgartirmoqchi bo'lgan bo'limingizni tanlang", reply_markup=reply.settings_btn)
 
 
@@ -31,9 +23,9 @@ async def settings_func_sex(message: types.Message):
 
 
 @router.callback_query(F.data.startswith('set_region_'))
-async def back_to_menu(call: CallbackQuery, state: FSMContext):
-    user = await User.objects.aget(telegram_id=call.from_user.id)
+async def set_region_func(call: CallbackQuery):
     data = call.data
+    user = await User.objects.aget(telegram_id=call.from_user.id)
     user.location = data.split('_')[-1]
     await user.asave()
 
@@ -42,10 +34,9 @@ async def back_to_menu(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data.startswith('set_gender_'))
-async def back_to_menu(call: CallbackQuery, state: FSMContext):
-    user = await User.objects.aget(telegram_id=call.from_user.id)
+async def set_sex_func(call: CallbackQuery):
     data = call.data
-
+    user = await User.objects.aget(telegram_id=call.from_user.id)
     user.sex = data.split('_')[-1]
     await user.asave()
 

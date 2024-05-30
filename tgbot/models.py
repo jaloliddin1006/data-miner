@@ -1,5 +1,29 @@
 from django.db import models
 
+
+GENDER_CHOISES = (
+    ('erkak', '🤵‍♂️ Erkak'),
+    ('ayol', '🤵‍♀️ Ayol')
+)
+
+REGION_CHOISES = (
+    ('001', 'Toshkent shahri'),
+    ('002', 'Andijon'),
+    ('003', 'Farg`ona'),
+    ('004', 'Namangan'),
+    ('005', 'Toshkent'),
+    ('006', 'Sirdaryo'),
+    ('007', 'Jizzax'),
+    ('008', 'Samarqand'),
+    ('009', 'Qashqadaryo'),
+    ('010', 'Surxondaryo'),
+    ('011', 'Navoiy'),
+    ('012', 'Buxoro'),
+    ('013', 'Xorazm'),
+    ('014', 'Qoraqalpog`iston'),
+)
+
+
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -12,8 +36,8 @@ class User(BaseModel):
     telegram_id = models.PositiveBigIntegerField(unique=True)
     full_name = models.CharField(max_length=255)
     username = models.CharField(max_length=128, null=True)
-    location = models.CharField(max_length=255)
-    sex = models.CharField(max_length=255)
+    location = models.CharField(max_length=10, choices=REGION_CHOISES, default='001')
+    sex = models.CharField(max_length=10, choices=GENDER_CHOISES, default='erkak')
 
     def __str__(self):
         return self.full_name
@@ -33,6 +57,9 @@ class BotAdmin(BaseModel):
         if not self.pk:
             pass
         super(BotAdmin, self).save(*args, **kwargs)
+        
+    class Meta:
+        db_table = "bot_admins"
 
 
 class Text(BaseModel):
@@ -93,13 +120,16 @@ class Feedback(BaseModel):
 
     def __str__(self):
         return f"{self.user.username}"
-
+    
 
 class Channel(BaseModel):
     channel_id = models.BigIntegerField()
     name = models.CharField(max_length=500)
     username = models.CharField(max_length=500)
-
     
     def __str__(self):
         return f"{self.channel_id}"
+    
+    class Meta:
+        db_table = "channels"
+        
