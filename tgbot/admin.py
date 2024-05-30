@@ -1,20 +1,25 @@
 from django.contrib import admin
+from django.urls import reverse
 from tgbot.models import User as TelegramUser, Text, Voice, TextPassed, VoiceCheck, BotAdmin, Feedback, Channel
 from django.utils.html import format_html
+
 import os
 from tgbot.resources import TextResource
 from import_export.admin import ImportExportModelAdmin
 
-
 @admin.register(BotAdmin)
 class BotAdminsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'telegram_id', 'user', 'is_active', 'created_at')
+    list_display = ('id', 'telegram_id', 'user', 'is_active', 'created_at', 'account')
     list_editable = ('is_active',)
     list_display_links = ('id', 'telegram_id')
 
     def telegram_id(self, obj):
         return str(obj.user.telegram_id)
-
+    
+    def account(self, obj):
+        return format_html(f'<button><a class="button" href="https://t.me/{obj.user.username}">View Telegram</a></bitton>'  )
+    account.short_description = 'Account'
+    account.allow_tags = True
 
 @admin.register(TelegramUser)
 class UserAdmin(admin.ModelAdmin):
