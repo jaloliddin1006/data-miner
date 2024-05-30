@@ -2,8 +2,8 @@ from django.db import models
 
 
 GENDER_CHOISES = (
-    ('erkak', '🤵‍♂️ Erkak'),
-    ('ayol', '🤵‍♀️ Ayol')
+    ('erkak', '🤵 Erkak'),
+    ('ayol', '👩‍💼 Ayol')
 )
 
 REGION_CHOISES = (
@@ -78,6 +78,8 @@ class Voice(BaseModel):
     text = models.ForeignKey(Text, on_delete=models.SET_NULL, null=True, related_name="voices")
     voice = models.FileField(upload_to="voices/")
     voice_id = models.CharField(max_length=255, unique=True, null=True)
+    length = models.IntegerField(null=True) # in seconds | 1 min = 60 sec
+    size = models.IntegerField(null=True) # in bytes | 1 MB = 1024 KB = 1024 * 1024 bytes
 
     def __str__(self):
         return str(self.text.text)

@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, os
 from django.core.management.base import BaseCommand
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.middlewares.request_logging import logger
@@ -19,7 +19,10 @@ class Command(BaseCommand):
 def setup_handlers(dispatcher: Dispatcher) -> None:
     """HANDLERS"""
     from tgbot.bot.handlers import setup_routers
-
+    
+    if not os.path.exists('media/voices'):
+        os.makedirs('media/voices')
+        
     dispatcher.include_router(setup_routers())
 
 

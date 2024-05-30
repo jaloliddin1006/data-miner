@@ -2,6 +2,8 @@ from django.contrib import admin
 from tgbot.models import User as TelegramUser, Text, Voice, TextPassed, VoiceCheck, BotAdmin, Feedback, Channel
 from django.utils.html import format_html
 import os
+from tgbot.resources import TextResource
+from import_export.admin import ImportExportModelAdmin
 
 
 @admin.register(BotAdmin)
@@ -24,7 +26,8 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(Text)
-class TextAdmin(admin.ModelAdmin):
+class TextAdmin(ImportExportModelAdmin):
+    resource_classes = [TextResource]
     list_display = ("id", "text_id", "text", )
     fields = ("text_id", "text", )
     search_fields = ("text_id", "text", )
@@ -33,7 +36,7 @@ class TextAdmin(admin.ModelAdmin):
 
 @admin.register(Voice)
 class VoiceAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "text", "audio_tag",  'like', 'dislike',)
+    list_display = ("id", "user", "text", "audio_tag", 'Length', 'Size', 'like', 'dislike',)
     search_fields = ("user__username", "text__text",  )
     list_display_links = ('id', 'user')
     # list_filter = ('user__username', 'text__text')
@@ -45,6 +48,12 @@ class VoiceAdmin(admin.ModelAdmin):
         else:
             return 'No audio file'
     audio_tag.short_description = 'Audio'
+    
+    def Length(self, obj):
+        return f"{obj.length} sek." if obj.length else "0 sek."
+    
+    def Size(self, obj):
+        return f"{round(obj.size / 1024 )} kb" if obj.size else "0 mb"
 
     def like(self, obj):
         return obj.checks.filter(is_correct=True).count()

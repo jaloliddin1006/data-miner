@@ -44,6 +44,6 @@ async def set_sex_func(call: CallbackQuery):
     await call.message.answer("Ma'lumot o'zgartirildi", reply_markup=reply.settings_btn)
 
 
-@router.message(F.text == '❌ Bekor qilish')
+@router.message(F.text == '⬅️ Ortga qaytish')
 async def settings_func(message: types.Message):
     await message.answer("Asosiy sahifa", reply_markup=reply.main)

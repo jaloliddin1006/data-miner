@@ -57,7 +57,7 @@ settings_btn = ReplyKeyboardMarkup(
             KeyboardButton(text="Jinsni tanlash"),
         ],
            [
-            KeyboardButton(text="❌ Bekor qilish"),
+            KeyboardButton(text="⬅️ Ortga qaytish"),
         ],
      
     ],

@@ -41,13 +41,14 @@ async def record_func(message: types.Message, state: FSMContext, user_id: int = 
 
 
     if not text:
-        await message.answer("Siz barcha matnlarni o'qib chiqdingiz")
+        await message.answer("Siz barcha matnlarni o'qib chiqdingiz", reply_markup=reply.main)
         await state.clear()
         return
     
+    text_id = text.text_id
     text = text.text
     
-    await state.update_data(text_id=text.text_id, text=text)
+    await state.update_data(text_id=text_id, text=text)
     await message.answer(f"{text}", reply_markup=reply.text_btn)
 
 
@@ -80,8 +81,10 @@ async def profile(message: types.Message, state: FSMContext):
     text_id = data.get("text_id")
     text = data.get("text")
     voice_id = message.voice.file_id
+    voice_size = message.voice.file_size # bytes
+    voice_length = message.voice.duration # seconds
     
-    await state.update_data(voice_id=voice_id)
+    await state.update_data(voice_id=voice_id, voice_size=voice_size, voice_length=voice_length)
     await message.answer("Yozilgan ovozingizni tekshiring.", reply_markup=reply.rmk)
     await message.answer_voice(voice=voice_id, caption=text, reply_markup=await builders.check_text(text_id))
     await state.set_state(RecordState.check)
@@ -100,22 +103,23 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     text_id = data.get("text_id")
     voice_id = data.get("voice_id")
+    voice_size = data.get("voice_size")
+    voice_length = data.get("voice_length")
     user_id = call.from_user.id
     
-
-    voice = await bot.get_file(voice_id)
-    voice_ogg = io.BytesIO()
-    await bot.download_file(voice.file_path, voice_ogg)
-
     user_folder = f"media/voices/{user_id}"
     if not os.path.exists(user_folder):
         os.mkdir(user_folder)
 
     voice_mp3_path = f"voices/{user_id}/{text_id}.mp3"
 
-    AudioSegment.from_file(voice_ogg, format="ogg").export(
-        f"media/{voice_mp3_path}", format="mp3"
-    )
+    # voice = await bot.get_file(voice_id)
+    # voice_ogg = io.BytesIO()
+    # await bot.download_file(voice.file_path, voice_ogg)
+
+    # AudioSegment.from_file(voice_ogg, format="ogg").export(
+    #     f"media/{voice_mp3_path}", format="mp3"
+    # )
     
     user = await User.objects.aget(telegram_id=user_id)
     text = await Text.objects.aget(text_id=text_id)
@@ -123,7 +127,7 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
     await sync_to_async(
         Voice.objects.create,
         thread_sensitive=True
-    )(user=user, text=text, voice=voice_mp3_path, voice_id=voice_id)
+    )(user=user, text=text, voice=voice_mp3_path, voice_id=voice_id, size=voice_size, length=voice_length)
 
     await call.message.delete()
     await call.answer("Ovoz yozildi! ✅")
