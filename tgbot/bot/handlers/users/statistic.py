@@ -41,11 +41,11 @@ async def check_voice_func(message: types.Message):
     pos = 0
     strickers = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"]
     for user in leaders[:10]:
-        leaders_text += f"{strickers[pos]}. [{user.full_name}](tg://user?id={user.telegram_id}) |  🎙️ : {user.voice} | ☑︎: {user.check}\n"
+        leaders_text += f"{strickers[pos]} [{user.full_name}](tg://user?id={user.telegram_id}) |  🎙️  {user.voice} | ☑︎  {user.check}\n"
         pos += 1
 
     # text = f"@{bot_properties.username} statistikasi\n\n"
-    leaders_text += "\n\n<b>Sizning natijangiz:</b>\n"
+    leaders_text += "\n\n**Sizning natijangiz:**\n"
     leaders_text += f"🎙️ {user_voices} ta matn o'qidingiz.\n"
     leaders_text += f"☑︎ {user_checked} ta ovozni tekshirdingiz.\n\n"
     leaders_text += f"Jami ishtirokchilar soni: {all_users} ta\n"

@@ -82,7 +82,7 @@ class Voice(BaseModel):
     size = models.IntegerField(null=True) # in bytes | 1 MB = 1024 KB = 1024 * 1024 bytes
 
     def __str__(self):
-        return str(self.text.text)
+        return str(self.voice.url)
 
     class Meta:
         db_table = "voices"
