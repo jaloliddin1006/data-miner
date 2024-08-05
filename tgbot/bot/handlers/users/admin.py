@@ -5,8 +5,8 @@ from asgiref.sync import sync_to_async
 from django.db.models import Count, Sum
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.client.session.middlewares.request_logging import logger
+from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest, TelegramNotFound
 from tgbot.utils import get_admins
-
 from tgbot.models import User, Voice, Text, TextPassed, VoiceCheck
 from tgbot.bot.loader import bot
 from tgbot.bot.keyboards import reply, builders, inline
@@ -40,7 +40,7 @@ async def message_format_func(message: types.Message, state=FSMContext):
 async def message_format_func(message: types.Message, state=FSMContext):
 
     users = await sync_to_async(
-        lambda: list(User.objects.all().values_list('telegram_id', flat=True)),
+        lambda: list(User.objects.filter(is_active=True).values_list('telegram_id', flat=True)),
         thread_sensitive=True
     )()
     msg = message.text
@@ -55,6 +55,14 @@ async def message_format_func(message: types.Message, state=FSMContext):
                 text=msg,
                 parse_mode=msg_f
             )
+       
+        except TelegramForbiddenError as err: # if user blocked bot
+            # await sync_to_async(User.objects.filter(telegram_id=user).delete)()
+            await sync_to_async(User.objects.filter(telegram_id=user).update)(is_active=False)
+
+            print("TelegramForbiddenError Error: ", err)
+            logger.info(f"Message did not send to user: {user}. Error: {err}")
+
         except Exception as error:
             logger.info(f"Message did not send to user: {user}. Error: {error}")
 

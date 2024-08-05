@@ -3,8 +3,9 @@ from aiogram.filters import CommandStart
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.client.session.middlewares.request_logging import logger
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from aiogram.types import Message, CallbackQuery
 from tgbot.models import User
+from asgiref.sync import sync_to_async
 
 from tgbot.bot.loader import bot
 from django.conf import settings
@@ -32,10 +33,12 @@ async def do_start(message: Message, state=FSMContext):
         count = await User.objects.acount()
         await message.answer("Iltimos, o'zingizning joylashuvingizni tanlang:", reply_markup=await builders.get_region_btn('none'))
         await state.set_state(Start.location)
-        msg = (f"[{make_title(user.full_name)}](tg://user?id={telegram_id}) bazaga qo'shildi\.\nBazada {count} ta foydalanuvchi bor\.")
+        msg = (f"[{user.full_name}](tg://user?id={telegram_id}) bazaga qo'shildi\.\nBazada {count} ta foydalanuvchi bor\.")
     else:
         await message.answer("Botdan foydalanishingiz mumkin", reply_markup=reply.main)
-        msg = f"[{make_title(full_name)}](tg://user?id={telegram_id}) bazaga oldin qo'shilgan"
+        msg = f"[{full_name}](tg://user?id={telegram_id}) bazaga oldin qo'shilgan"
+        if not user.is_active:
+            await sync_to_async(User.objects.filter(telegram_id=telegram_id).update)(is_active=True)
         await state.clear()
         
     for admin in settings.ADMINS:

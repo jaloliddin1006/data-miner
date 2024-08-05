@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.urls import reverse
-from tgbot.models import User as TelegramUser, Text, Voice, TextPassed, VoiceCheck, BotAdmin, Feedback, Channel
+from tgbot.models import User as BotUser, Text, Voice, TextPassed, VoiceCheck, BotAdmin, Feedback, Channel
 from django.utils.html import format_html
 
 import os
 from tgbot.resources import TextResource
 from import_export.admin import ImportExportModelAdmin
+
 
 @admin.register(BotAdmin)
 class BotAdminsAdmin(admin.ModelAdmin):
@@ -21,9 +22,10 @@ class BotAdminsAdmin(admin.ModelAdmin):
     account.short_description = 'Account'
     account.allow_tags = True
 
-@admin.register(TelegramUser)
+
+@admin.register(BotUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "telegram_id", "full_name", 'location','sex', "username", 'created_at')
+    list_display = ("id", "telegram_id", "full_name", 'location','sex', "username", 'created_at', 'is_active'   )
     fields = ("full_name", "username", "telegram_id",'location','sex')
     search_fields = ("full_name", "username", "telegram_id")
     list_display_links = ('id', 'telegram_id')
