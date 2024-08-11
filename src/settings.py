@@ -25,7 +25,7 @@ DB_HOST = env.str("DB_HOST")
 DB_PORT = env.str("DB_PORT")
 
 
-ALLOWED_HOSTS = ["94.72.127.171"]
+ALLOWED_HOSTS = ["94.72.127.171", 'stt.mamatmusayev.uz']
 
 if DEBUG:
     ALLOWED_HOSTS.append('127.0.0.1')
