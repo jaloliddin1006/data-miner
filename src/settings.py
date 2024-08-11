@@ -2,7 +2,9 @@ import os
 from pathlib import Path
 from environs import Env
 
-if not os.path.exists('.env'):
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+if not os.path.exists(os.path.join(BASE_DIR,'.env')):
     print(".env fayli topilmadi!\n\n"
           ".env.example faylidan nusxa ko'chirib shablonni o'zingizga moslang.")
     exit(1)
@@ -21,9 +23,6 @@ DB_PASS = env.str("DB_PASS")
 DB_NAME = env.str("DB_NAME")
 DB_HOST = env.str("DB_HOST")
 DB_PORT = env.str("DB_PORT")
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 ALLOWED_HOSTS = ["94.72.127.171"]
