@@ -159,9 +159,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-# db.sqlite3
+db.sqlite3
 data.json
 backup.sql
 venv/
 .env
-# migrations/
+migrations/
