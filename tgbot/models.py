@@ -63,7 +63,7 @@ class BotAdmin(BaseModel):
 
 
 class Text(BaseModel):
-    text_id = models.CharField(max_length=255, unique=True)
+    text_id = models.CharField(max_length=65, unique=True)
     text = models.TextField()
 
     def __str__(self):

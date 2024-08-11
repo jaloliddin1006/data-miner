@@ -33,7 +33,8 @@ def check_channel_sub(channels: list):
     return builder.as_markup()
 
 
-async def check_text(text_id: str):
+async def check_text(text_id):
+    text_id = str(text_id).strip()[:40]
     builder = InlineKeyboardBuilder()
     builder.button(text="🔄 Qaytadan yozish", callback_data=f"rewrite_record:{text_id}")
     builder.button(text="✅ Saqlash", callback_data=f"correct:{text_id}")
@@ -42,11 +43,11 @@ async def check_text(text_id: str):
     return builder.as_markup()
 
 
-async def check_voice(text_id: str):
+async def check_voice(voice_id: str):
     builder = InlineKeyboardBuilder()
     builder.button(text="🔼 Menu", callback_data=f"menu")
-    builder.button(text="👍🏻 To'g'ri", callback_data=f"positive:{text_id}")
-    builder.button(text="👎 Noto'g'ri", callback_data=f"negative:{text_id}")
+    builder.button(text="👍🏻 To'g'ri", callback_data=f"positive:{voice_id}")
+    builder.button(text="👎 Noto'g'ri", callback_data=f"negative:{voice_id}")
     builder.adjust(1, 2) 
     return builder.as_markup()
 

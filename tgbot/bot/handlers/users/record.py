@@ -112,13 +112,14 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
     voice_length = data.get("voice_length")
     user_id = call.from_user.id
     
-    user_folder = f"media/voices/{user_id}"
-    if not os.path.exists(user_folder):
-        os.mkdir(user_folder)
 
     voice_mp3_path = f"voices/{user_id}/{text_id}.mp3"
 
     ##############################  Convert ogg to mp3 and download  ##############################
+    # user_folder = f"media/voices/{user_id}"
+    # if not os.path.exists(user_folder):
+    #     os.mkdir(user_folder)
+    
     # voice = await bot.get_file(voice_id)
     # voice_ogg = io.BytesIO()
     # await bot.download_file(voice.file_path, voice_ogg)
@@ -138,7 +139,6 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
 
     await call.message.delete_reply_markup()
     await call.answer("Ovoz yozildi! ✅")
-    # await call.message.answer("👇 Matnni o'qib, voice yuboring. 👇")
 
     await state.clear()
     await record_func(call.message, state, user_id=call.from_user.id)
@@ -147,10 +147,13 @@ async def pagination_handler(call: CallbackQuery, state: FSMContext):
 
 @router.callback_query(RecordState.check, F.data.startswith("rewrite_record"))
 async def pagination_handler(call: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    text_id = data.get("text_id")
     await call.message.delete()
     await call.message.answer("👇 Matnni qaytadan o'qib, voice yuboring. 👇")
     await state.clear()
-    await record_func(call.message, state, user_id=call.from_user.id, text_id=call.data.split(":")[1])
+    await record_func(call.message, state, user_id=call.from_user.id, text_id=text_id)
+
 
 @router.callback_query(RecordState.check, F.data.startswith("wrong"))
 async def pagination_handler(call: CallbackQuery, state: FSMContext):
