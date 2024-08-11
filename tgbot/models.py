@@ -83,6 +83,14 @@ class Voice(BaseModel):
 
     def __str__(self):
         return str(self.voice.url)
+    
+    @property
+    def like(self):
+        return self.checks.filter(is_correct=True).count()
+    
+    @property
+    def dislike(self):
+        return self.checks.filter(is_correct=False).count()
 
     class Meta:
         db_table = "voices"

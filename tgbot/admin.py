@@ -4,8 +4,8 @@ from tgbot.models import User as BotUser, Text, Voice, TextPassed, VoiceCheck, B
 from django.utils.html import format_html
 
 import os
-from tgbot.resources import TextResource
-from import_export.admin import ImportExportModelAdmin
+from tgbot.resources import TextResource, VoiceResource
+from import_export.admin import ImportExportModelAdmin, ExportActionModelAdmin
 
 
 @admin.register(BotAdmin)
@@ -42,7 +42,9 @@ class TextAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Voice)
-class VoiceAdmin(admin.ModelAdmin):
+class VoiceAdmin(ExportActionModelAdmin):
+    resource_classes = [VoiceResource]
+
     list_display = ("id", "user", "text", "audio_tag", 'Length', 'Size', 'like', 'dislike',)
     search_fields = ("user__username", "text__text",  )
     list_display_links = ('id', 'user')
