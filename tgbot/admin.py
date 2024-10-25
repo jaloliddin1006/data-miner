@@ -25,10 +25,11 @@ class BotAdminsAdmin(admin.ModelAdmin):
 
 @admin.register(BotUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "telegram_id", "full_name", 'location','sex', "username", 'created_at', 'is_active'   )
-    fields = ("full_name", "username", "telegram_id",'location','sex')
+    list_display = ("id", "telegram_id", "full_name", 'location','sex', "username", 'created_at', 'is_active', 'academic_group'  )
+    fields = ("full_name", "username", "telegram_id",'location','sex', 'academic_group')
     search_fields = ("full_name", "username", "telegram_id")
     list_display_links = ('id', 'telegram_id')
+    list_filter = ('academic_group',)
     list_per_page = 50
 
 

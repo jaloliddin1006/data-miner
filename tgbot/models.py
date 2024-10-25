@@ -34,7 +34,14 @@ class BaseModel(models.Model):
 
 
 class User(BaseModel):
+    GROUPS_CHOISES = (
+        ('1', 'ROE002-2'),
+        ('2', 'ROE002-4'),
+    )
     telegram_id = models.PositiveBigIntegerField(unique=True)
+    academic_group = models.CharField(max_length=10, choices=GROUPS_CHOISES, null=True, blank=True)
+    student_name = models.CharField(max_length=255, null=True, blank=True)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
     full_name = models.CharField(max_length=255)
     username = models.CharField(max_length=128, null=True)
     location = models.CharField(max_length=10, choices=REGION_CHOISES, default='001')
@@ -42,6 +49,13 @@ class User(BaseModel):
 
     def __str__(self):
         return self.full_name
+    
+    @property
+    def get_user_image(self):
+        if self.avatar:
+            return self.avatar.url
+        return 'static/img/image.png'
+    
 
     class Meta:
         db_table = "telegram_users"
