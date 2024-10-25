@@ -46,7 +46,7 @@ def home(request: HttpRequest):
                     voice_duration = models.Sum('voices__length', distinct=True)
                 )
     
-    group_2_results['formatted_voice_duration'] = f"{group_2_results['voice_duration'] // 3600:02}:{(group_2_results['voice_duration'] % 3600) // 60:02}"
+    # group_2_results['formatted_voice_duration'] = f"{group_2_results['voice_duration'] // 3600:02}:{(group_2_results['voice_duration'] % 3600) // 60:02}"
 
     context = {
         'group_1_students': group_1_students,
